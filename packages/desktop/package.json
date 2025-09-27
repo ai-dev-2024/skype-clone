@@ -1,0 +1,120 @@
+{
+  "name": "@skype-clone/desktop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Electron desktop application for Skype Clone",
+  "main": "dist/main.js",
+  "homepage": "./",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:electron\" \"npm run dev:react\"",
+    "dev:electron": "wait-on http://localhost:3000 && tsc -p electron-tsconfig.json && electron dist/main.js",
+    "dev:react": "cross-env BROWSER=none react-scripts start",
+    "build": "npm run build:react && npm run build:electron",
+    "build:react": "react-scripts build",
+    "build:electron": "tsc -p electron-tsconfig.json",
+    "build:electron:win": "npm run build:electron && electron-builder --win",
+    "build:electron:mac": "npm run build:electron && electron-builder --mac",
+    "build:electron:linux": "npm run build:electron && electron-builder --linux",
+    "clean": "rimraf dist build",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "dist": "npm run build && electron-builder",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.1",
+    "electron-log": "^4.4.8",
+    "electron-updater": "^6.1.4",
+    "socket.io-client": "^4.7.2",
+    "@skype-clone/shared": "*",
+    "axios": "^1.5.0",
+    "jwt-decode": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "react-router-dom": "^6.15.0",
+    "styled-components": "^6.0.8",
+    "@types/react": "^18.2.22",
+    "@types/react-dom": "^18.2.7",
+    "@types/styled-components": "^5.1.26",
+    "typescript": "^4.9.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.0",
+    "@types/jest": "^29.5.4",
+    "concurrently": "^8.2.1",
+    "cross-env": "^7.0.3",
+    "electron": "^25.3.1",
+    "electron-builder": "^24.6.4",
+    "rimraf": "^5.0.1",
+    "wait-on": "^7.0.1",
+    "eslint": "^8.49.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1"
+  },
+  "build": {
+    "appId": "com.skypeclone.desktop",
+    "productName": "Skype Clone",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "build/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.social-networking",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

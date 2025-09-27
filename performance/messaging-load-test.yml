@@ -1,0 +1,106 @@
+config:
+  target: 'http://localhost:5000'
+  phases:
+    # Ramp up phase
+    - duration: 120
+      arrivalRate: 1
+      rampTo: 10
+      name: "Ramp up"
+    # Sustained load
+    - duration: 600
+      arrivalRate: 10
+      name: "Sustained load"
+    # Peak load
+    - duration: 180
+      arrivalRate: 25
+      name: "Peak load"
+  processor: "./performance/socket-processor.js"
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+
+scenarios:
+  - name: "Send Message"
+    weight: 40
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "test@example.com"
+            password: "password123"
+          capture:
+            json: "$.data.token"
+            as: "auth_token"
+      - post:
+          url: "/api/messages"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          json:
+            receiverId: "507f1f77bcf86cd799439011"  # Mock user ID
+            content: "Load test message {{ $randomInt }}"
+            type: "text"
+          expect:
+            - statusCode: 201
+
+  - name: "Get Messages"
+    weight: 30
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "test@example.com"
+            password: "password123"
+          capture:
+            json: "$.data.token"
+            as: "auth_token"
+      - get:
+          url: "/api/messages"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          expect:
+            - statusCode: 200
+
+  - name: "WebSocket Connection"
+    weight: 20
+    engine: socketio
+    flow:
+      - emit:
+          channel: "authenticate"
+          data:
+            token: "mock-jwt-token-for-testing"
+      - think: 5
+      - emit:
+          channel: "join-room"
+          data:
+            roomId: "test-room-{{ $randomInt }}"
+      - think: 10
+      - emit:
+          channel: "send-message"
+          data:
+            content: "WebSocket test message {{ $randomInt }}"
+            roomId: "test-room-{{ $randomInt }}"
+      - think: 5
+      - emit:
+          channel: "disconnect"
+
+  - name: "File Upload"
+    weight: 10
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "test@example.com"
+            password: "password123"
+          capture:
+            json: "$.data.token"
+            as: "auth_token"
+      - post:
+          url: "/api/messages/upload"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          formData:
+            file:
+              "./performance/test-file.txt"
+              "test-file-{{ $randomInt }}.txt"
+          expect:
+            - statusCode: 200

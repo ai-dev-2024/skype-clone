@@ -1,0 +1,10 @@
+This is a test file for performance testing file uploads in the Skype Clone application.
+It contains sample text to simulate realistic file upload scenarios.
+
+Performance testing helps ensure that the application can handle:
+- Multiple concurrent file uploads
+- Large file sizes
+- Various file types
+- Error conditions
+
+This file is used in Artillery load tests to simulate real-world usage patterns.
