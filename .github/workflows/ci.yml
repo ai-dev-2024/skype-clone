@@ -81,7 +81,7 @@ jobs:
           STRIPE_PUBLISHABLE_KEY: pk_test_ci_testing_placeholder
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           directory: ./packages/backend/coverage
           flags: backend
@@ -108,7 +108,7 @@ jobs:
           CI: true
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           directory: ./packages/web/coverage
           flags: web
