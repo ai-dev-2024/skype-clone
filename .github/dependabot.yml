@@ -1,6 +1,5 @@
 version: 2
 updates:
-  # Enable version updates for npm
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -19,8 +18,11 @@ updates:
     labels:
       - "dependencies"
       - "automated"
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
 
-  # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -37,8 +39,11 @@ updates:
     labels:
       - "github-actions"
       - "automated"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
 
-  # Docker updates
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
@@ -55,3 +60,7 @@ updates:
     labels:
       - "docker"
       - "automated"
+    groups:
+      docker-images:
+        patterns:
+          - "*"
